@@ -1,26 +1,53 @@
 import { Link } from "react-router-dom";
+import clsx from "clsx";
+import { useState } from "react";
 
 const Menus = () => {
+
     return (
         <>
             <li>
-                <Link to="/" className="font-bold normal-case text-xl hover:bg-white onClick:bg-white">
+                <Link
+                    to="/"
+                    className={clsx(
+                        "font-bold",
+                        "normal-case",
+                        "text-xl",
+                    )}
+                >
                     Home
                 </Link>
             </li>
             <li>
-                <Link to="/todos" className="font-bold normal-case text-xl hover:bg-white onClick:bg-white">
+                <Link
+                    to="/todos"
+                    className={clsx(
+                        "font-bold",
+                        "normal-case",
+                        "text-xl",
+                    )}
+                >
                     Todos
                 </Link>
             </li>
             <li>
-                <Link to="/completed" className="font-bold normal-case text-xl hover:bg-white onClick:bg-white">
+                <Link
+                    to="/completed"
+                    className={clsx(
+                        "font-bold",
+                        "normal-case",
+                        "text-xl",
+                    )}
+                >
                     Completed
                 </Link>
             </li>
         </>
     );
 };
+
+// ... (rest of your components remain unchanged)
+
 const Navbar = () => {
     return (
         <>
