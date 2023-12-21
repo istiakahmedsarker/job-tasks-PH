@@ -3,10 +3,25 @@ import { Link } from 'react-router-dom';
 import useAuth from '../../Hooks/useAuth'
 import { FaGoogle, FaTwitter, FaGithub } from 'react-icons/fa';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 const SignUp = () => {
 
-    // const { createUser, updateUserProfile } = useAuth()
+    const { createUser, updateUserProfile, googleLogin } = useAuth();
+    
+    const handleGoogle = ()=>{
+        googleLogin()
+        .then(res => {
+            toast.success('Successfully Signed Up!')
+            console.log('Successfully signed up', res);
+        })
+        .catch(err => {
+            toast.error("Failed to sign up")
+            console.log('Failed to sign up', err)
+        })
+
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const name = event.target.name.value;
@@ -15,17 +30,22 @@ const SignUp = () => {
         const password = event.target.password.value;
 
         try {
-            // const user = await createUser(email, password);
-            // console.log(user);
+            await createUser(email, password)
+            .then(res => {
+                toast.success('Successfully Signed Up!')
+                console.log('Successfully signed up', res);
+            })
+            .catch(err => {
+                toast.error("Failed to sign up")
+                console.log('Failed to sign up', err)
+            })
 
             // If createUser succeeds, updateUserProfile
-            // updateUserProfile(name, img);
+            updateUserProfile(name, img);
 
             const userData = {
                 displayName: name,
-                img: img,
                 email: email,
-                role: 'user'
             };
 
             // Assuming axios.post returns a promise
@@ -38,6 +58,7 @@ const SignUp = () => {
 
     return (
         <div className='bg-[#131313] h-screen flex items-center justify-center '>
+            <Toaster/>
             <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-900 dark:text-gray-100">
                 <form onSubmit={handleSubmit} action="" className="space-y-6">
                     <div className="space-y-1 text-sm">
@@ -79,63 +100,30 @@ const SignUp = () => {
                             placeholder="Password"
                             className="w-full px-4 py-3 rounded-md bg-[#333333] p-3 text-[#b5b2b6]  "
                         />
-                        <label className="block text-[#b5b2b6] ">Email</label>
-                        <input
-                            type="text"
-                            name="email"
-                            id="username"
-                            placeholder="Email"
-                            className="w-full px-4 py-3 rounded-md bloc bg-[#333333] p-3 text-[#b5b2b6]    "
-                        />
-                    </div>
-                    <div className="space-y-1 text-sm">
-                        <label className="block text-[#b5b2b6] ">Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            id="password"
-                            placeholder="Password"
-                            className="w-full px-4 py-3 rounded-md bg-[#333333] p-3 text-[#b5b2b6]  "
-                        />
                     </div>
                     <button
                         type='submit'
                         className="block w-full bg-[#333333] p-3 text-center text-[#b5b2b6] rounded-sm transition-colors duration-300 hover:bg-[#f7c667] hover:text-black font-medium"
                     >
-                        Sign in
-                    </button>
-                    <button
-                        type='submit'
-                        className="block w-full bg-[#333333] p-3 text-center text-[#b5b2b6] rounded-sm transition-colors duration-300 hover:bg-[#f7c667] hover:text-black font-medium"
-                    >
-                        Sign in
+                        Sign Up
                     </button>
                 </form>
                 <div className="flex items-center pt-4 space-x-1">
                     <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
                     <p className="px-3 text-sm text-[#b5b2b6] ">Login with social accounts</p>
-                    <p className="px-3 text-sm text-[#b5b2b6] ">Login with social accounts</p>
                     <div className="flex-1 h-px sm:w-16 dark:bg-gray-700"></div>
                 </div>
                 <div className="flex justify-center space-x-4">
-                    <button aria-label="Log in with Google" className="p-3 rounded-sm bg-[#333333]">
-                        <FaGoogle className="text-[#b5b2b6] " />
-                    <button aria-label="Log in with Google" className="p-3 rounded-sm bg-[#333333]">
-                        <FaGoogle className="text-[#b5b2b6] " />
+                    <button onClick={handleGoogle} aria-label="Log in with Google" className="p-3 rounded-sm bg-[#333333]">
+                        <FaGoogle className="text-[#b5b2b6]" />
                     </button>
                     <button aria-label="Log in with Twitter" className="p-3 rounded-sm bg-[#333333]">
-                        <FaTwitter className="text-[#b5b2b6] " />
-                    <button aria-label="Log in with Twitter" className="p-3 rounded-sm bg-[#333333]">
-                        <FaTwitter className="text-[#b5b2b6] " />
+                        <FaTwitter className="text-[#b5b2b6]" />
                     </button>
                     <button aria-label="Log in with GitHub" className="p-3 rounded-sm bg-[#333333]">
-                        <FaGithub className="text-[#b5b2b6] " />
-                    <button aria-label="Log in with GitHub" className="p-3 rounded-sm bg-[#333333]">
-                        <FaGithub className="text-[#b5b2b6] " />
+                        <FaGithub className="text-[#b5b2b6]" />
                     </button>
                 </div>
-                <p className="text-xs text-center sm:px-6 text-[#b5b2b6] ">Already have an account?
-                    <Link to="/login" rel="noopener noreferrer" href="#" className="underline dark:text-gray-100">Log In</Link>
                 <p className="text-xs text-center sm:px-6 text-[#b5b2b6] ">Already have an account?
                     <Link to="/login" rel="noopener noreferrer" href="#" className="underline dark:text-gray-100">Log In</Link>
                 </p>

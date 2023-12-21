@@ -25,7 +25,7 @@ const Menus = () => {
             </li>
             <li>
                 <NavLink
-                    to="/todos"
+                    to="/dashboard"
                     className={clsx(
                         "font-bold",
                         "normal-case",
