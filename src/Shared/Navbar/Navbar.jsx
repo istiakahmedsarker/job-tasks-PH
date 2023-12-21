@@ -42,6 +42,18 @@ const Menus = () => {
                     Completed
                 </Link>
             </li>
+            <li>
+                <Link
+                    to="/signup"
+                    className={clsx(
+                        "font-bold",
+                        "normal-case",
+                        "text-xl",
+                    )}
+                >
+                    Sign Up
+                </Link>
+            </li>
         </>
     );
 };
