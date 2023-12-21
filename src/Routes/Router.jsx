@@ -6,6 +6,7 @@ import SignUp from "../Pages/SignUp/SignUp";
 import Todos from "../Pages/Todos/Todos";
 import DashboardMain from "../Layout/DashboardMain";
 import CompletedList from "../Components/CompletedList/CompletedList";
+import Login from "../Pages/Login/Login"
 // bg-[#ffd79c]
 
 const router = createBrowserRouter([
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
             {
             path: "/signup",
             element: <SignUp />,
+            },
+            {
+            path: "/login",
+            element: <Login />,
             },
         ]
     },
