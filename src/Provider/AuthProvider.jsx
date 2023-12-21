@@ -1,38 +1,37 @@
 import { createContext, useEffect, useState } from "react";
-import { GoogleAuthProvider, createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
-import { auth } from "../Firebase/Firebase.config";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
+import app from "../Firebase/firebase.config";
 
-export const AuthContext = createContext(null)
-const googleProvider = new GoogleAuthProvider();
+export const AuthContext = createContext(null);
+
+const auth = getAuth(app);
 
 const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState({})
-    const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    //google login
-    const googleLogin = () => {
-        setLoading(true)
-        return signInWithPopup(auth, googleProvider)
-    }
-
-    // sign up
     const createUser = (email, password) => {
-        setLoading(true)
+        setLoading(true);
         return createUserWithEmailAndPassword(auth, email, password)
     }
 
-    // sign in user
-    const signin = (email, password) => {
-        setLoading(true)
-        return signInWithEmailAndPassword(auth, email, password)
+    const signIn = (email, password) => {
+        setLoading(true);
+        return signInWithEmailAndPassword(auth, email, password);
     }
 
-    // sign out
-    const logOut = () => {
-        setLoading(true)
-        return signOut(auth)
+    const updateUserProfile = (name, photo) => {
+        return updateProfile(auth.currentUser, {
+            displayName: name, photoURL: photo
+        });
     }
-    //observer
+
+    const logOut = () => {
+        setLoading(true);
+        return signOut(auth);
+    }
+
+
     useEffect(() => {
         const unSubscribe = onAuthStateChanged(auth, (user) => {
             setUser(user)
@@ -44,18 +43,18 @@ const AuthProvider = ({ children }) => {
         }
     }, [])
 
-    console.log(user)
-    const authentications = {
-        googleLogin,
-        signin,
+    const authInfo = {
         user,
-        logOut,
+        loading,
         createUser,
-        loading
+        signIn,
+        logOut,
+        updateUserProfile,
+        
     }
 
     return (
-        <AuthContext.Provider value={authentications}>
+        <AuthContext.Provider value={authInfo}>
             {children}
         </AuthContext.Provider>
     );
