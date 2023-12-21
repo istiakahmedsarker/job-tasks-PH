@@ -1,6 +1,7 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import clsx from "clsx";
+import useAuth from "../../Hooks/useAuth";
 
 const Menus = () => {
     return (
@@ -79,6 +80,7 @@ const Menus = () => {
 };
 
 const Navbar = () => {
+    const { user, logOut } = useAuth()
     return (
         <>
             <div className="navbar bg-[#131313]">
@@ -115,7 +117,6 @@ const Navbar = () => {
                             "text-3xl",
                             "text-[#b5b2b6]",
                             "transition-colors duration-300",
-                            "hover:bg-[#f7c667]"
                         )}
                     >
                         GLASSES
@@ -128,25 +129,31 @@ const Navbar = () => {
                 </div>
 
                 <div className="navbar-end">
-                    <div className="dropdown dropdown-end">
-                        <label tabIndex={0} className="btn-circle avatar">
-                            <div className="w-10 rounded-full">
-                                <img src="https://i.ibb.co/y0yrnYQ/1681283571946.jpg" />
-                            </div>
-                        </label>
-                        <ul
-                            tabIndex={0}
-                            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                        >
-                            <li>
-                                <button className="btn btn-sm btn-ghost">Farhan</button>
-                            </li>
-                            <li>
-                                <button className="btn btn-sm btn-ghost">Logout</button>
-                            </li>
-                        </ul>
-                    </div>
+                    {user?.email ? (
+                        <div className="dropdown dropdown-end">
+                            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                                <div className="w-10 rounded-full">
+                                    <img src={user.photoUrl} alt="User Avatar" />
+                                </div>
+                            </label>
+                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-[#131313] rounded-box w-52">
+                                <li className="text-center mb-2">
+                                    <a className="btn btn-sm btn-ghost text-[#b5b2b6]">{user.displayName}</a>
+                                </li>
+                                <li>
+                                    <button onClick={logOut} className="btn btn-sm btn-ghost text-[#b5b2b6]">
+                                        Logout
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    ) : (
+                        <Link to="/login">
+                            <button className="btn btn-sm btn-ghost text-[#b5b2b6]">Login</button>
+                        </Link>
+                    )}
                 </div>
+
             </div>
         </>
     );

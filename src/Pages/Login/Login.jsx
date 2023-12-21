@@ -8,8 +8,6 @@ const Login = () => {
     const { signIn} = useAuth();
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const name = event.target.name.value;
-        const img = event.target.img.value;
         const email = event.target.email.value;
         const password = event.target.password.value;
 
@@ -17,11 +15,9 @@ const Login = () => {
             await signIn(email, password)
                 .then(res => {
                     toast.success('Successfully logged in!')
-                    console.log('Successfully logged in', res);
                 })
                 .catch(err => {
                     toast.error("Failed to log in ")
-                    console.log('Failed to log in ', err)
                 })
         } catch (error) {
             console.error('Error during signup:', error);
