@@ -3,3 +3,5 @@ npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 npm install firebase
 npm i -D daisyui@latest
+npm i dotenv
+npm install react-icons
