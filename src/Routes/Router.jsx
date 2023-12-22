@@ -9,6 +9,7 @@ import CompletedList from "../Components/CompletedList/CompletedList";
 import Login from "../Pages/Login/Login"
 import Home from "../Pages/Home/Home";
 import PrivateRoute from "./PrivateRoute";
+import OngoingList from "../Components/OngoingList/OngoingList";
 // bg-[#ffd79c]
 
 const router = createBrowserRouter([
@@ -40,11 +41,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "ongoingList",
-                element: <Todos />,
+                element: <PrivateRoute><OngoingList/></PrivateRoute>,
             },
             {
                 path: "completedList",
-                element: <CompletedList />,
+                element: <PrivateRoute><CompletedList/></PrivateRoute>,
             }
         ]
     },

@@ -25,9 +25,8 @@ const TodoCard = ({ task, status, onDrop, onRefresh, onEdit }) => {
     const handleDelete = async (_id) => {
         try {
             const response = await axios.delete(`http://localhost:5000/deleteTodo/${_id}`);
-            console.log(response.data);
+            // console.log(response.data);
 
-            // Call the onRefresh callback to refetch data and trigger a re-render
             onRefresh();
         } catch (error) {
             console.error('Error deleting todo:', error);
@@ -35,7 +34,6 @@ const TodoCard = ({ task, status, onDrop, onRefresh, onEdit }) => {
     };
 
     const handleEdit = () => {
-        // Call the onEdit callback to open the modal with the task data for editing
         onEdit(task);
     };
 

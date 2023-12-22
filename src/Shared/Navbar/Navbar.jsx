@@ -43,7 +43,24 @@ const Menus = () => {
             </li>
             <li>
                 <NavLink
-                    to="/completed"
+                    to="/dashboard/ongoingList"
+                    className={clsx(
+                        "font-bold",
+                        "normal-case",
+                        "text-xl",
+                        "text-[#b5b2b6]",
+                        "transition-colors duration-300",
+                        "hover:bg-[#f7c667]",
+                        "hover:text-black"
+                    )}
+                    activeClassName="bg-[#f7c667]"
+                >
+                    Ongoing
+                </NavLink>
+            </li>
+            <li>
+                <NavLink
+                    to="/dashboard/completedList"
                     className={clsx(
                         "font-bold",
                         "normal-case",
@@ -56,23 +73,6 @@ const Menus = () => {
                     activeClassName="bg-[#f7c667]"
                 >
                     Completed
-                </NavLink>
-            </li>
-            <li>
-                <NavLink
-                    to="/signup"
-                    className={clsx(
-                        "font-bold",
-                        "normal-case",
-                        "text-xl",
-                        "text-[#b5b2b6]",
-                        "transition-colors duration-300",
-                        "hover:bg-[#f7c667]",
-                        "hover:text-black"
-                    )}
-                    activeClassName="bg-[#f7c667]"
-                >
-                    Sign Up
                 </NavLink>
             </li>
         </>
