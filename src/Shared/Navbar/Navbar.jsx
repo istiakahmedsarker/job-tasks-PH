@@ -86,7 +86,6 @@ const Navbar = () => {
         await logOut();
         navigate('/');
     };
-
     return (
         <>
             <div className="navbar bg-[#131313]">
@@ -135,12 +134,12 @@ const Navbar = () => {
                         <div className="dropdown dropdown-end">
                             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                                 <div className="w-10 rounded-full">
-                                    <img src={user.photoUrl} alt="User Avatar" />
+                                <img className="hover:bg-[#f7c667] bg-[#f7c667]" src={user?.photoURL} alt="User Avatar" />
                                 </div>
                             </label>
                             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-[#333333] text-[#b5b2b6] rounded-box w-52">
                                 <li className="text-center mb-2">
-                                    <a className="btn btn-sm btn-ghost text-[#b5b2b6] hover:bg-[#f7c667] hover:text-black">{user.displayName}</a>
+                                    <a className="btn btn-sm btn-ghost text-[#b5b2b6] hover:bg-[#f7c667] hover:text-black">{user?.displayName}</a>
                                 </li>
                                 <li>
                                     <button onClick={handleLogout} className="btn btn-sm btn-ghost  text-[#b5b2b6] hover:bg-[#f7c667] hover:text-black">
