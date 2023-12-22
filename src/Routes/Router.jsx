@@ -35,10 +35,10 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: <PrivateRoute><DashboardMain /></PrivateRoute>,
         children: [
-            {
-                path: "/dashboard",
-                element: <PrivateRoute><Todos /></PrivateRoute>,
-            },
+            // {
+            //     path: "/dashboard",
+            //     element: <PrivateRoute><Todos /></PrivateRoute>,
+            // },
             {
                 path: "ongoingList",
                 element: <PrivateRoute><OngoingList/></PrivateRoute>,

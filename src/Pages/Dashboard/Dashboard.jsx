@@ -1,6 +1,7 @@
 import { FaHome } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import Todos from "../Todos/Todos";
 
 const Dashboard = () => {
     const [activeLink, setActiveLink] = useState("/dashboard/todos");
@@ -16,10 +17,7 @@ const Dashboard = () => {
 
     return (
         <div className="flex">
-            <div className="w-64 min-h-screen bg-[#131313]">
-                <ul className="menu p-4">
-                    <li>
-                        <NavLink
+                        {/* <NavLink
                             to="/dashboard"
                             className={`text-[#b5b2b6] flex items-center`}
                             style={activeLink === "/dashboard/todos" ? activeStyle : null}
@@ -27,10 +25,8 @@ const Dashboard = () => {
                         >
                             <FaHome className="mr-2" />
                             <span className="hidden lg:block">TODO List</span>
-                        </NavLink>
-                    </li>
-                </ul>
-            </div>
+                        </NavLink> */}
+                        <Todos/>
         </div>
     );
 };
