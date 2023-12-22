@@ -6,6 +6,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import TodoCard from '../../Components/TodoCard/TodoCard';
+import { useForm } from 'react-hook-form';
 
 
 const Todos = () => {
@@ -17,6 +18,7 @@ const Todos = () => {
     const completedTasksHeader = 'Completed Tasks'
     const { user } = useAuth()
     const email = user?.email;
+    const { register, handleSubmit, setValue } = useForm();
 
     useEffect(() => {
         try {
@@ -48,34 +50,30 @@ const Todos = () => {
 
     // State for modal
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [priority, setPriority] = useState(''); // State to store the selected priority
     const [selectedDate, setSelectedDate] = useState(currentDate.toISOString().split('T')[0]); // State to store the selected date
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const name = event.target.name.value;
-        const task = event.target.task.value;
-        const todoTasks = {
+    const onSubmit = async (data) => {
+        const { name, task, priority } = data;
+
+        const todoTask = {
             title: name,
             task: task,
             priority: priority,
             status: 'todo',
             userEmail: email,
-            date: selectedDate
-        }
+            date: selectedDate,
+        };
 
         try {
-            // Assuming axios.post returns a promise
-            const response = await axios.post('http://localhost:5000/createTodoTask', todoTasks);
+            const response = await axios.post('http://localhost:5000/createTodoTask', todoTask);
             console.log('Data sent successfully!', response.data);
-            toast.success('Successfully Created a TODO!')
-
+            toast.success('Successfully Created a TODO!');
         } catch (error) {
             console.error('Error during signup:', error);
-            toast.success('Error during Creating a TODO!')
+            toast.success('Error during Creating a TODO!');
         }
 
-        closeModal()
+        closeModal();
     };
 
     // Function to handle modal open
@@ -90,19 +88,38 @@ const Todos = () => {
 
     const [{ isOver, draggedItem }, drop] = useDrop(() => ({
         accept: "task",
-        drop: (item) => addItemToSection(item.id),
+        drop: (item) => addItemToSection(item.id, item.status),
         collect: monitor => ({
             isOver: !!monitor.isOver(),
             draggedItem: monitor.getItem(),
         }),
     }));
 
+    const addItemToSection = (id, status) => {
+        // Check if draggedItem is not null before using it
+        if (status) {
+            console.log(`Item with ID ${id} dropped into section: ${status}`);
+            // Call the API to update the task status
+            axios.patch(`http://localhost:5000/updateTodoStatus/${id}`, { status })
+                .then(res => console.log(res.data));
+        }
+    };
 
-    const addItemToSection = (id) => {
-
+    const handleDrop = (taskId, sectionName) => {
+        console.log(`Item with ID ${taskId} dropped into section: ${sectionName}`);
         // Call the API to update the task status
-        axios.patch(`http://localhost:5000/updateTodoStatus/${id}`)
+        axios.patch(`http://localhost:5000/updateTodoStatus/${taskId}`, { status: sectionName })
             .then(res => console.log(res.data));
+    };
+
+    const handleRefresh = async () => {
+        // Refetch data using Axios and update state
+        try {
+            const todoTasksResponse = await axios.get(`http://localhost:5000/getTodoTask/${email}`);
+            setTodoTasks(todoTasksResponse.data);
+        } catch (error) {
+            console.error('Error fetching tasks after delete:', error);
+        }
     };
 
     return (
@@ -127,7 +144,7 @@ const Todos = () => {
                         {/* Your modal content goes here */}
                         <h2 className="text-xl font-bold mb-4 text-white">Create Your TODO</h2>
                         {/* Add your form or task creation content here */}
-                        <form onSubmit={handleSubmit} action="" className="space-y-6 mb-4">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mb-4">
                             <div className="space-y-1 text-sm">
                                 <label className="block text-[#b5b2b6]">Title</label>
                                 <input
@@ -135,6 +152,7 @@ const Todos = () => {
                                     name="name"
                                     placeholder="Title"
                                     className="w-full px-4 py-3 rounded-md bloc bg-black p-3 text-[#b5b2b6]"
+                                    {...register('name')} // Connect the input with React Hook Form
                                 />
                             </div>
                             <div className="space-y-1 text-sm">
@@ -144,17 +162,19 @@ const Todos = () => {
                                     name="task"
                                     placeholder="Task"
                                     className="w-full px-4 py-3 rounded-md bloc bg-black p-3 text-[#b5b2b6]"
+                                    {...register('task')} // Connect the input with React Hook Form
                                 />
                             </div>
                             <div className="space-y-1 text-sm">
                                 <label className="block text-[#b5b2b6]">Priority</label>
                                 <select
                                     name="priority"
-                                    onChange={(e) => setPriority(e.target.value)}
-                                    value={priority}
+                                    onChange={(e) => setValue('priority', e.target.value)} // Use setValue to update the value
                                     className="w-full px-4 py-3 rounded-md bloc bg-black p-3 text-[#b5b2b6]"
                                 >
-                                    <option value="" disabled>Select Priority</option>
+                                    <option value="" disabled>
+                                        Select Priority
+                                    </option>
                                     <option value="High">High</option>
                                     <option value="Medium">Medium</option>
                                     <option value="Low">Low</option>
@@ -172,7 +192,12 @@ const Todos = () => {
                             </div>
 
                             <div className="flex justify-between">
-                                <button onClick={closeModal} className="p-4 rounded-xl text-[#b5b2b6] btn-primary bg-black hover:bg-[#f7c667] hover:text-black">Exit </button>
+                                <button
+                                    onClick={closeModal}
+                                    className="p-4 rounded-xl text-[#b5b2b6] btn-primary bg-black hover:bg-[#f7c667] hover:text-black"
+                                >
+                                    Exit{' '}
+                                </button>
                                 <button
                                     type="submit"
                                     className="p-4 rounded-xl text-[#b5b2b6] btn-primary bg-black hover:bg-[#f7c667] hover:text-black"
@@ -194,7 +219,7 @@ const Todos = () => {
                     <h2 className="text-2xl font-bold text-white mb-4">{todoTasksHeader}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {todoTasks.map((task) => (
-                            <TodoCard task={task} status={todoTasksHeader} key={task._id} />
+                            <TodoCard task={task} status={todoTasksHeader} key={task._id} onRefresh={handleRefresh} />
                         ))}
                     </div>
                 </div>
@@ -202,7 +227,7 @@ const Todos = () => {
                     <h2 className="text-2xl font-bold text-white mb-4">{ongoingTasksHeader}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {ongoingTasks.map((task) => (
-                            <TodoCard task={task} status={ongoingTasksHeader} key={task._id} />
+                            <TodoCard task={task} status={ongoingTasksHeader} key={task._id} onDrop={handleDrop} />
                         ))}
                     </div>
                 </div>
