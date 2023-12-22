@@ -5,3 +5,4 @@ npm install firebase
 npm i -D daisyui@latest
 npm i dotenv
 npm install react-icons
+npm i react-dnd

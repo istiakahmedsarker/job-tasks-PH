@@ -3,25 +3,36 @@ import React, { useEffect, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import useAuth from '../../Hooks/useAuth';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DndProvider, useDrag, useDrop } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
+import TodoCard from '../../Components/TodoCard/TodoCard';
 
 
 const Todos = () => {
     const [todoTasks, setTodoTasks] = useState([]);
+    const [ongoingTasks, setOngoingTasks] = useState([]);
+    const [completedTasks, setCompletedTasks] = useState([]);
+    const todoTasksHeader = 'Todo Tasks'
+    const ongoingTasksHeader = 'Ongoing Tasks'
+    const completedTasksHeader = 'Completed Tasks'
     const { user } = useAuth()
     const email = user?.email;
 
-    const statuses = {
-        todo: 'Todo',
-        ongoing: 'Ongoing',
-        completed: 'Completed',
-    };
-
     useEffect(() => {
-        fetch(`http://localhost:5000/getTodoTask/${email}`)
-            .then((res) => res.json())
-            .then((data) => setTodoTasks(data));
-    }, [email]);
+        try {
+            axios.get(`http://localhost:5000/getTodoTask/${email}`)
+                .then(res => setTodoTasks(res.data))
 
+            axios.get(`http://localhost:5000/getOngoingTasks/${email}`)
+                .then(res => setOngoingTasks(res.data))
+
+            axios.get(`http://localhost:5000/getCompletedTasks/${email}`)
+                .then(res => setCompletedTasks(res.data))
+
+        } catch (error) {
+            console.error('Error fetching tasks:', error);
+        }
+    }, []);
 
     const currentDate = new Date();
     const month = currentDate.toLocaleString('default', { month: 'short' });
@@ -77,7 +88,25 @@ const Todos = () => {
         setIsModalOpen(false);
     };
 
+    const [{ isOver, draggedItem }, drop] = useDrop(() => ({
+        accept: "task",
+        drop: (item) => addItemToSection(item.id),
+        collect: monitor => ({
+            isOver: !!monitor.isOver(),
+            draggedItem: monitor.getItem(),
+        }),
+    }));
+
+
+    const addItemToSection = (id) => {
+
+        // Call the API to update the task status
+        axios.patch(`http://localhost:5000/updateTodoStatus/${id}`)
+            .then(res => console.log(res.data));
+    };
+
     return (
+
         <div data-aos="fade-left" className="text-center p-8 bg-[#131313] rounded-md">
             <Toaster />
             <div className="grid grid-cols-4 gap-4">
@@ -160,25 +189,32 @@ const Todos = () => {
             <div className="flex justify-end mt-4">
                 <button onClick={openModal} className="p-4 rounded-xl text-[#b5b2b6] btn-primary bg-[#333333] hover:bg-[#f7c667] hover:text-black">Create TODO</button>
             </div>
-            <div className="mt-8">
-                <h2 className="text-2xl font-bold text-white mb-4">Todo Tasks</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {todoTasks.map((task, index) => (
-                        <div key={index} className={`bg-[#333333] rounded-md p-4 shadow-md transition-transform transform hover:scale-105`}>
-                            <h3 className={`text-lg font-bold mb-2`}>{task.title}</h3>
-                            <p className="text-[#b5b2b6] mb-2">{task.task}</p>
-                            <div className="flex flex-col text-[#b5b2b6] mb-2">
-                                <span>Priority: {task.priority}</span>
-                                <span>Date: {task.date}</span>
-                            </div>
-                            <button className="bg-[#f7c667] text-black px-3 py-1 rounded-md hover:bg-[#e0b754] transition-colors duration-300">Complete</button>
-                        </div>
-                    ))}
+            <div ref={drop} className="">
+                <div className="mt-8">
+                    <h2 className="text-2xl font-bold text-white mb-4">{todoTasksHeader}</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {todoTasks.map((task) => (
+                            <TodoCard task={task} status={todoTasksHeader} key={task._id} />
+                        ))}
+                    </div>
+                </div>
+                <div className="mt-8">
+                    <h2 className="text-2xl font-bold text-white mb-4">{ongoingTasksHeader}</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {ongoingTasks.map((task) => (
+                            <TodoCard task={task} status={ongoingTasksHeader} key={task._id} />
+                        ))}
+                    </div>
+                </div>
+                <div className="mt-8">
+                    <h2 className="text-2xl font-bold text-white mb-4">{completedTasksHeader}</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {completedTasks.map((task) => (
+                            <TodoCard task={task} status={completedTasksHeader} key={task._id} />
+                        ))}
+                    </div>
                 </div>
             </div>
-            
-
-
         </div>
     );
 };
