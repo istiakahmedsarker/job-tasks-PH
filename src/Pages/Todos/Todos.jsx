@@ -8,7 +8,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 const Todos = () => {
     const [todoTasks, setTodoTasks] = useState([]);
     const { user } = useAuth()
-    const email = user.email;
+    const email = user?.email;
 
     const statuses = {
         todo: 'Todo',
@@ -21,29 +21,6 @@ const Todos = () => {
             .then((res) => res.json())
             .then((data) => setTodoTasks(data));
     }, [email]);
-
-    const handleDragEnd = async (result) => {
-        if (!result.destination) return;
-
-        const updatedTasks = [...todoTasks];
-        const [movedTask] = updatedTasks.splice(result.source.index, 1);
-        updatedTasks.splice(result.destination.index, 0, movedTask);
-
-        // Update the task status based on the droppableId
-        const newStatus = Object.keys(statuses).find(
-            (status) => statuses[status] === result.destination.droppableId
-        );
-        movedTask.status = newStatus;
-
-        // Update the tasks in the backend
-        try {
-            await axios.post('http://localhost:5000/updateTodoTask', movedTask);
-            setTodoTasks(updatedTasks);
-        } catch (error) {
-            console.error('Error during task update:', error);
-            toast.error('Error during updating task status!');
-        }
-    };
 
 
     const currentDate = new Date();
@@ -101,7 +78,7 @@ const Todos = () => {
     };
 
     return (
-        <div className="text-center p-8 bg-[#131313] rounded-md">
+        <div data-aos="fade-left" className="text-center p-8 bg-[#131313] rounded-md">
             <Toaster />
             <div className="grid grid-cols-4 gap-4">
                 <div>

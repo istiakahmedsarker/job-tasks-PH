@@ -8,6 +8,7 @@ import DashboardMain from "../Layout/DashboardMain";
 import CompletedList from "../Components/CompletedList/CompletedList";
 import Login from "../Pages/Login/Login"
 import Home from "../Pages/Home/Home";
+import PrivateRoute from "./PrivateRoute";
 // bg-[#ffd79c]
 
 const router = createBrowserRouter([
@@ -16,34 +17,34 @@ const router = createBrowserRouter([
         element: <Main />,
         children: [
             {
-            path: "/",
-            element: <Home />,
+                path: "/",
+                element: <Home />,
             },
             {
-            path: "/signup",
-            element: <SignUp />,
+                path: "/signup",
+                element: <SignUp />,
             },
             {
-            path: "/login",
-            element: <Login />,
+                path: "/login",
+                element: <Login />,
             },
         ]
     },
     {
         path: "/dashboard",
-        element: <DashboardMain />,
+        element: <PrivateRoute><DashboardMain /></PrivateRoute>,
         children: [
             {
-            path: "/dashboard",
-            element: <Todos />,
+                path: "/dashboard",
+                element: <PrivateRoute><Todos /></PrivateRoute>,
             },
             {
-            path: "ongoingList",
-            element: <Todos />,
+                path: "ongoingList",
+                element: <Todos />,
             },
             {
-            path: "completedList",
-            element: <CompletedList />,
+                path: "completedList",
+                element: <CompletedList />,
             }
         ]
     },

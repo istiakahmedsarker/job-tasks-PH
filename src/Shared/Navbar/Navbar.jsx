@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import useAuth from "../../Hooks/useAuth";
 
@@ -81,6 +81,12 @@ const Menus = () => {
 
 const Navbar = () => {
     const { user, logOut } = useAuth()
+    const navigate = useNavigate()
+    const handleLogout = async () => {
+        await logOut();
+        navigate('/');
+    };
+
     return (
         <>
             <div className="navbar bg-[#131313]">
@@ -89,7 +95,7 @@ const Navbar = () => {
                         <label tabIndex={0} className="lg:hidden">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
+                                className="h-5 w-5 text-[#b5b2b6]"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor"
@@ -111,15 +117,11 @@ const Navbar = () => {
                     </div>
                     <NavLink
                         to="/"
-                        className={clsx(
-                            "font-bold",
-                            "normal-case",
-                            "text-3xl",
-                            "text-[#b5b2b6]",
-                            "transition-colors duration-300",
-                        )}
+                        className={
+                            "font-bold normal-case text-xl ml-2 md:text-3xl text-[#b5b2b6] transition-colors duration-300"
+                        }
                     >
-                        GLASSES
+                        Daily Docket
                     </NavLink>
                 </div>
                 <div className="navbar-center hidden lg:flex">
@@ -136,12 +138,12 @@ const Navbar = () => {
                                     <img src={user.photoUrl} alt="User Avatar" />
                                 </div>
                             </label>
-                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-[#131313] rounded-box w-52">
+                            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-[#333333] text-[#b5b2b6] rounded-box w-52">
                                 <li className="text-center mb-2">
-                                    <a className="btn btn-sm btn-ghost text-[#b5b2b6]">{user.displayName}</a>
+                                    <a className="btn btn-sm btn-ghost text-[#b5b2b6] hover:bg-[#f7c667] hover:text-black">{user.displayName}</a>
                                 </li>
                                 <li>
-                                    <button onClick={logOut} className="btn btn-sm btn-ghost text-[#b5b2b6]">
+                                    <button onClick={handleLogout} className="btn btn-sm btn-ghost  text-[#b5b2b6] hover:bg-[#f7c667] hover:text-black">
                                         Logout
                                     </button>
                                 </li>

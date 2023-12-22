@@ -7,19 +7,26 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const SignUp = () => {
 
-    const { createUser, updateUserProfile, googleLogin } = useAuth();
+    const { createUser, updateUserProfile, googleLogin,githubLogin } = useAuth();
     
     const handleGoogle = ()=>{
         googleLogin()
         .then(res => {
             toast.success('Successfully Signed Up!')
-            console.log('Successfully signed up', res);
         })
         .catch(err => {
             toast.error("Failed to sign up")
-            console.log('Failed to sign up', err)
         })
-
+    }
+    
+    const handleGithub = ()=>{
+        githubLogin()
+        .then(res => {
+            toast.success('Successfully Signed Up!')
+        })
+        .catch(err => {
+            toast.error("Failed to sign up")
+        })
     }
 
     const handleSubmit = async (event) => {
@@ -98,7 +105,7 @@ const SignUp = () => {
                             name="password"
                             id="password"
                             placeholder="Password"
-                            className="w-full px-4 py-3 rounded-md bg-[#333333] p-3 text-[#b5b2b6]  "
+                            className="w-full px-4 py-3 rounded-md bg-[#333333] text-[#b5b2b6] p-3  "
                         />
                     </div>
                     <button
@@ -120,7 +127,7 @@ const SignUp = () => {
                     <button aria-label="Log in with Twitter" className="p-3 rounded-sm bg-[#333333]">
                         <FaTwitter className="text-[#b5b2b6]" />
                     </button>
-                    <button aria-label="Log in with GitHub" className="p-3 rounded-sm bg-[#333333]">
+                    <button onClick={handleGithub} aria-label="Log in with GitHub" className="p-3 rounded-sm bg-[#333333]">
                         <FaGithub className="text-[#b5b2b6]" />
                     </button>
                 </div>

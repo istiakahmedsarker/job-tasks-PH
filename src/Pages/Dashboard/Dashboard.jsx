@@ -1,5 +1,4 @@
-import { FaHome, FaUsers } from "react-icons/fa";
-import { HiSpeakerphone } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 
@@ -17,39 +16,17 @@ const Dashboard = () => {
 
     return (
         <div className="flex">
-            <div className="w-64 min-h-screen">
+            <div className="w-64 min-h-screen bg-[#131313]">
                 <ul className="menu p-4">
                     <li>
                         <NavLink
                             to="/dashboard"
-                            className={`text-[#b5b2b6]`}
+                            className={`text-[#b5b2b6] flex items-center`}
                             style={activeLink === "/dashboard/todos" ? activeStyle : null}
                             onClick={() => handleNavLinkClick("/dashboard/todos")}
                         >
-                            <FaHome />
-                            TODO List
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            to="/dashboard/ongoingList"
-                            className={`text-[#b5b2b6]`}
-                            style={activeLink === "/dashboard/ongoingList" ? activeStyle : null}
-                            onClick={() => handleNavLinkClick("/dashboard/ongoingList")}
-                        >
-                            <FaUsers />
-                            Ongoing List
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            to="/dashboard/completedList"
-                            className={`text-[#b5b2b6]`}
-                            style={activeLink === "/dashboard/completedList" ? activeStyle : null}
-                            onClick={() => handleNavLinkClick("/dashboard/completedList")}
-                        >
-                            <HiSpeakerphone />
-                            Completed List
+                            <FaHome className="mr-2" />
+                            <span className="hidden lg:block">TODO List</span>
                         </NavLink>
                     </li>
                 </ul>
