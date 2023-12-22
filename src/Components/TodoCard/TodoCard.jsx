@@ -3,7 +3,9 @@ import React from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 import { FaEdit } from 'react-icons/fa'; // Import an edit icon from an icon library
 
-const TodoCard = ({ task, status, onDrop, onRefresh }) => {
+// ... (import statements)
+
+const TodoCard = ({ task, status, onDrop, onRefresh, onEdit }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: "task",
         item: { id: task._id, status },
@@ -32,12 +34,17 @@ const TodoCard = ({ task, status, onDrop, onRefresh }) => {
         }
     };
 
+    const handleEdit = () => {
+        // Call the onEdit callback to open the modal with the task data for editing
+        onEdit(task);
+    };
+
     return (
         <div ref={drop} className={`bg-[#333333] rounded-md p-4 shadow-md transition-transform transform hover:scale-105 relative`}>
             <div ref={drag} className={`${isDragging ? 'opacity-50' : ''}`}>
                 {/* Edit icon */}
                 <div className="absolute top-2 right-2">
-                    <FaEdit size={20} color="#f7c667" />
+                    <FaEdit cursor="pointer" size={20} color="#f7c667" onClick={handleEdit} />
                 </div>
 
                 {/* Your TodoCard content goes here */}
@@ -57,3 +64,4 @@ const TodoCard = ({ task, status, onDrop, onRefresh }) => {
 };
 
 export default TodoCard;
+

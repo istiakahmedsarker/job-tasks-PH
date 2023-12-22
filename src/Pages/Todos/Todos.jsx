@@ -13,6 +13,7 @@ const Todos = () => {
     const [todoTasks, setTodoTasks] = useState([]);
     const [ongoingTasks, setOngoingTasks] = useState([]);
     const [completedTasks, setCompletedTasks] = useState([]);
+    const [selectedTask, setSelectedTask] = useState(null);
     const todoTasksHeader = 'Todo Tasks'
     const ongoingTasksHeader = 'Ongoing Tasks'
     const completedTasksHeader = 'Completed Tasks'
@@ -59,22 +60,31 @@ const Todos = () => {
             title: name,
             task: task,
             priority: priority,
-            status: 'todo',
             userEmail: email,
             date: selectedDate,
         };
 
         try {
-            const response = await axios.post('http://localhost:5000/createTodoTask', todoTask);
-            console.log('Data sent successfully!', response.data);
-            toast.success('Successfully Created a TODO!');
+            if (selectedTask) {
+                // If selectedTask exists, it means we are editing an existing task
+                const response = await axios.patch(`http://localhost:5000/updateTodoTask/${selectedTask._id}`, todoTask);
+                console.log('Task updated successfully!', response.data);
+                toast.success('Successfully updated TODO!');
+            } else {
+                // If selectedTask is null, it means we are creating a new task
+                const response = await axios.post('http://localhost:5000/createTodoTask', todoTask);
+                console.log('Task created successfully!', response.data);
+                toast.success('Successfully Created a TODO!');
+            }
         } catch (error) {
-            console.error('Error during signup:', error);
-            toast.success('Error during Creating a TODO!');
+            console.error('Error during task creation/edit:', error);
+            toast.success('Error during Creating/Editing a TODO!');
         }
 
         closeModal();
+        handleRefresh(); // Refresh the data after creating/editing a task
     };
+
 
     // Function to handle modal open
     const openModal = () => {
@@ -122,6 +132,12 @@ const Todos = () => {
         }
     };
 
+    const handleEdit = (task) => {
+        // Open the modal and set the selected task for editing
+        setIsModalOpen(true);
+        setSelectedTask(task);
+    };
+
     return (
 
         <div data-aos="fade-left" className="text-center p-8 bg-[#131313] rounded-md">
@@ -144,7 +160,7 @@ const Todos = () => {
                         {/* Your modal content goes here */}
                         <h2 className="text-xl font-bold mb-4 text-white">Create Your TODO</h2>
                         {/* Add your form or task creation content here */}
-                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mb-4">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mb-4 z-10">
                             <div className="space-y-1 text-sm">
                                 <label className="block text-[#b5b2b6]">Title</label>
                                 <input
@@ -219,7 +235,7 @@ const Todos = () => {
                     <h2 className="text-2xl font-bold text-white mb-4">{todoTasksHeader}</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                         {todoTasks.map((task) => (
-                            <TodoCard task={task} status={todoTasksHeader} key={task._id} onRefresh={handleRefresh} />
+                            <TodoCard task={task} status={todoTasksHeader} key={task._id} onRefresh={handleRefresh} onEdit={handleEdit} />
                         ))}
                     </div>
                 </div>
